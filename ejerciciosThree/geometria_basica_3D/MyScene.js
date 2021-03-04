@@ -5,8 +5,8 @@ import Stats from "../libs/stats.js";
 
 import {
     Cubo,
+    Cono,
     //Cilindro,
-    //Cono,
     //Esfera,
     //Toro,
     //Icosaedro,
@@ -24,7 +24,6 @@ class MyScene extends Three.Scene {
 
         this.gui = this.createGUI();
 
-        // Construir los elementos de la escena.
         this.createLights();
         this.createCamera();
         this.createGround();
@@ -40,9 +39,13 @@ class MyScene extends Three.Scene {
         // Estadísticas
         this.stats = this.createStats(myCanvas);
 
-        // Crear el modelo por último.
-        this.model = new Cubo(this.gui, "Controles del cubo");
-        this.add(this.model);
+        // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
+        this.objetos_escena = new Three.Object3D();
+
+        this.objetos_escena.add(new Cubo(this.gui, "Controles del cubo"));
+        this.objetos_escena.add(new Cono(this.gui, "Controles del cono"));
+
+        this.add(this.objetos_escena);
     }
 
     createCamera() {
@@ -64,7 +67,7 @@ class MyScene extends Three.Scene {
             this.renderer.domElement
         );
 
-        this.cameraControl.rotateSpeed = 5;
+        this.cameraControl.rotateSpeed = 2.5;
         this.cameraControl.zoomSpeed = -2;
         this.cameraControl.panSpeed = 0.5;
         this.cameraControl.target = look;
@@ -73,20 +76,20 @@ class MyScene extends Three.Scene {
     createGround() {
         var geometryGround = new Three.PlaneGeometry(100, 100);
 
-        var texture = new Three.TextureLoader().load(
+        var texture_ground = new Three.TextureLoader().load(
             "../imgs/bright_squares256.png"
         );
 
-        texture.repeat.set(10, 10);
-        texture.wrapS = texture.wrapT = Three.RepeatWrapping;
-        texture.magFilter = Three.NearestFilter;
-        texture.encoding = Three.sRGBEncoding;
+        texture_ground.repeat.set(10, 10);
+        texture_ground.wrapS = texture_ground.wrapT = Three.RepeatWrapping;
+        texture_ground.magFilter = Three.NearestFilter;
+        texture_ground.encoding = Three.sRGBEncoding;
 
         var materialGround = new Three.MeshPhongMaterial({
             shininess: 2,
             color: 0x576574,
             specular: 0xc8d6e5,
-            map: texture,
+            map: texture_ground,
         });
         var ground = new Three.Mesh(geometryGround, materialGround);
 
@@ -101,44 +104,66 @@ class MyScene extends Three.Scene {
         var gui = new GUI();
 
         this.guiControls = new (function () {
-            this.lightIntensity = 0.5;
+            this.spotlightIntensity = 0.5;
+            this.ambientLightIntensity = 1;
+            this.sunLightIntensity = 2.5;
             this.axisOnOff = true;
         })();
+
+        //
+        // ───────────────────────────────────────────────────── LUCES ─────
+        //
 
         var folder = gui.addFolder("Luz y ejes");
 
         folder
-            .add(this.guiControls, "lightIntensity", 0, 1, 0.1)
-            .name("Intensidad de la luz:\t");
+            .add(this.guiControls, "spotlightIntensity", 0, 50, 1)
+            .name("Spotlight intensity");
 
-        folder.add(this.guiControls, "axisOnOff").name("Mostrar ejes:\t");
+        folder
+            .add(this.guiControls, "ambientLightIntensity", 0, 3, 0.1)
+            .name("Ambient light intensity");
+        folder
+            .add(this.guiControls, "sunLightIntensity", 0, 3, 0.1)
+            .name("Sunlight intensity");
+
+        gui.add(this.guiControls, "axisOnOff").name("Mostrar ejes");
 
         return gui;
     }
 
     createLights() {
-        var ambientLight = new Three.AmbientLight(0xfefef3, 1);
-        this.add(ambientLight);
+        // Luz ambiental
+        this.ambientLight = new Three.AmbientLight(
+            0xfefef3,
+            this.guiControls.ambientLightIntensity
+        );
+        this.add(this.ambientLight);
 
-        var sunLight = new Three.DirectionalLight("white", 2.5);
-        sunLight.position.set(1000, 2000, 1000);
-        sunLight.castShadow = true;
-        sunLight.shadow.camera.top = 750;
-        sunLight.shadow.camera.bottom = -750;
-        sunLight.shadow.camera.left = -750;
-        sunLight.shadow.camera.right = 750;
-        sunLight.shadow.camera.near = 750;
-        sunLight.shadow.camera.far = 5000;
-        sunLight.shadow.mapSize.set(1024, 1024);
-        sunLight.shadow.bias = -0.0002;
+        // Luz solar
+        this.sunLight = new Three.DirectionalLight(
+            "white",
+            this.guiControls.sunLightIntensity
+        );
+        this.sunLight.position.set(1000, 2000, 1000);
+        this.sunLight.castShadow = true;
+        this.sunLight.shadow.camera.top = 750;
+        this.sunLight.shadow.camera.bottom = -750;
+        this.sunLight.shadow.camera.left = -750;
+        this.sunLight.shadow.camera.right = 750;
+        this.sunLight.shadow.camera.near = 750;
+        this.sunLight.shadow.camera.far = 5000;
+        this.sunLight.shadow.mapSize.set(1024, 1024);
+        this.sunLight.shadow.bias = -0.0002;
 
-        this.add(sunLight);
+        this.add(this.sunLight);
 
+        // Spotlight
         this.spotLight = new Three.SpotLight(
             0xf6b93b,
-            this.guiControls.lightIntensity
+            this.guiControls.spotlightIntensity
         );
-        this.spotLight.position.set(60, 60, 40);
+        this.spotLight.position.set(0, 50, 0);
         this.add(this.spotLight);
     }
 
@@ -187,12 +212,18 @@ class MyScene extends Three.Scene {
     update() {
         this.renderer.render(this, this.getCamera());
 
-        this.spotLight.intensity = this.guiControls.lightIntensity;
+        this.spotLight.intensity = this.guiControls.spotlightIntensity;
+        this.ambientLight.intensity = this.guiControls.ambientLightIntensity;
+        this.ambientLight.intensity = this.guiControls.sunLightIntensity;
+
         this.axis.visible = this.guiControls.axisOnOff;
 
         this.cameraControl.update();
 
-        this.model.update();
+        // Actualizar los objetos de la escena
+        this.objetos_escena.children.map(function (objeto) {
+            objeto.update();
+        });
 
         this.stats.update();
 
