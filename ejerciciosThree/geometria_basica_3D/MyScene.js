@@ -6,10 +6,10 @@ import Stats from "../libs/stats.js";
 import {
     Cubo,
     Cono,
-    //Cilindro,
-    //Esfera,
-    //Toro,
-    //Icosaedro,
+    Cilindro,
+    Esfera,
+    Toro,
+    Icosaedro,
 } from "./Geometria_basica.js";
 
 //
@@ -42,8 +42,29 @@ class MyScene extends Three.Scene {
         // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
         this.objetos_escena = new Three.Object3D();
 
-        this.objetos_escena.add(new Cubo(this.gui, "Controles del cubo"));
-        this.objetos_escena.add(new Cono(this.gui, "Controles del cono"));
+        // Añadir elementos a escena
+        var objeto = new Cubo(this.gui, "Controles del cubo");
+        this.objetos_escena.add(objeto);
+
+        objeto = new Cono(this.gui, "Controles del cono");
+        objeto.set_spawn_coordinates(2.4, 0.4, 0);
+        this.objetos_escena.add(objeto);
+
+        objeto = new Cilindro(this.gui, "Controles del cilindro");
+        objeto.set_spawn_coordinates(-2.4, 0.4, 0);
+        this.objetos_escena.add(objeto);
+
+        objeto = new Esfera(this.gui, "Controles de la esfera");
+        objeto.set_spawn_coordinates(0, 0.3, 2.4);
+        this.objetos_escena.add(objeto);
+
+        objeto = new Toro(this.gui, "Controles del toro");
+        objeto.set_spawn_coordinates(0, 0.4, -2.4);
+        this.objetos_escena.add(objeto);
+
+        objeto = new Icosaedro(this.gui, "Controles del icosaedro");
+        objeto.set_spawn_coordinates(2.4, 0.25, 2.4);
+        this.objetos_escena.add(objeto);
 
         this.add(this.objetos_escena);
     }
