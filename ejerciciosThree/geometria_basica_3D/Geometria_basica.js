@@ -2,11 +2,13 @@ import * as Three from "../libs/three.module.js";
 
 /* TODO
     - Elementos a crear: Cubo, cono, cilindro, esfera, toro, icosaedro.
-    - Material usado es MeshNormalMaterial.
+    - Material usado es MeshNormalMaterial en los vídeos.
     - Sombreado suave: flatShading = true
         NOTE: poner true al atributo needsUpdate del material para que se tenga en cuenta el cambio
     - Movimiento continuo se consigue aumentando un poco la rotación poco a poco. Por ejemplo: += 0.01.
         NOTE: quizás, pequeña rotación continua lateral + oscilación hacia arriba y hacia abajo?
+
+    - Colores: https://flatuicolors.com/palette/ca
 */
 
 //
@@ -270,7 +272,22 @@ class Cono extends Three.Mesh {
 
 // ────────────────────────────────────────────────────────────────────────────────
 
-class Cilindro extends Three.Object3D {}
+class Cilindro extends Three.Object3D {
+    constructor(gui, gui_title) {
+        super();
+
+        this.createGUI(gui, gui_title);
+
+        this.geometry = new Three.CylinderGeometry(1, 1, 1, 20);
+        this.material = new Three.MeshToonMaterial({
+            color: 0x5f27cd,
+            wireframe: false,
+        });
+    }
+
+    guiControls(gui, gui_title) {}
+    update() {}
+}
 
 // ────────────────────────────────────────────────────────────────────────────────
 
