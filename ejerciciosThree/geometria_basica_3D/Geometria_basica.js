@@ -5,6 +5,7 @@ import * as Three from "../libs/three.module.js";
     - Material usado es MeshNormalMaterial en los vídeos.
     - Sombreado suave: flatShading = true
         NOTE: poner true al atributo needsUpdate del material para que se tenga en cuenta el cambio
+        NOTE: no hace falta con renderer.physicallyCorrectLights = true
     - Movimiento continuo se consigue aumentando un poco la rotación poco a poco. Por ejemplo: += 0.01.
         NOTE: quizás, pequeña rotación continua lateral + oscilación hacia arriba y hacia abajo?
 
@@ -15,24 +16,14 @@ import * as Three from "../libs/three.module.js";
 // ─────────────────────────────────────────────────────────────────── CLASES ─────
 //
 
-class Cubo extends Three.Mesh {
-    constructor(gui, titleGui) {
+/*
+    Implementación de los controles básicos de los objetos.
+    No repetimos los mismos elementos para todos los objetos
+*/
+class Basic_Geometry extends Three.Mesh {
+    constructor(gui, gui_title) {
         super();
-
-        // Se crea la parte de la interfaz que corresponde a la caja
-        // Se crea primero porque otros métodos usan las variables que se definen para la interfaz
-        this.createGUI(gui, titleGui);
-
-        // Un Mesh se compone de geometría y material
-        this.geometry = new Three.BoxGeometry(1, 1, 1);
-        // Como material se crea uno a partir de un color
-        this.material = new Three.MeshPhongMaterial({
-            color: 0xee5253,
-            flatShading: true,
-            specular: 0.4,
-            shininess: 0.1,
-            reflectivity: 0.2,
-        });
+        this.createGUI(gui, gui_title);
     }
 
     createGUI(gui, titleGui) {
@@ -49,6 +40,8 @@ class Cubo extends Three.Mesh {
             this.posY = 0.4;
             this.posZ = 0.0;
 
+            this.reset_position = new Three.Vector3(0, 0.4, 0);
+
             this.wireframe = false;
 
             // Un botón para dejarlo todo en su posición inicial
@@ -62,9 +55,9 @@ class Cubo extends Three.Mesh {
                 this.rotY = 0.0;
                 this.rotZ = 0.0;
 
-                this.posX = 0.0;
-                this.posY = 0.0;
-                this.posZ = 0.0;
+                this.posX = this.reset_position.x;
+                this.posY = this.reset_position.y;
+                this.posZ = this.reset_position.z;
             };
         })();
 
@@ -141,26 +134,61 @@ class Cubo extends Three.Mesh {
 
         this.material.wireframe = this.guiControls.wireframe;
     }
+
+    set_spawn_coordinates(coordenadas) {
+        this.guiControls.posX = coordenadas.x;
+        this.guiControls.posY = coordenadas.y;
+        this.guiControls.posZ = coordenadas.z;
+
+        this.guiControls.reset_position = coordenadas;
+    }
+
+    set_spawn_coordinates(x, y, z) {
+        this.guiControls.posX = x;
+        this.guiControls.posY = y;
+        this.guiControls.posZ = z;
+
+        this.guiControls.reset_position.x = x;
+        this.guiControls.reset_position.y = y;
+        this.guiControls.reset_position.z = z;
+    }
 }
 
 // ────────────────────────────────────────────────────────────────────────────────
 
-class Cono extends Three.Mesh {
+class Cubo extends Basic_Geometry {
     constructor(gui, gui_title) {
-        super();
+        super(gui, gui_title);
 
-        this.createGUI(gui, gui_title);
+        // Un Mesh se compone de geometría y material
+        this.geometry = new Three.BoxGeometry(1, 1, 1);
+        // Como material se crea uno a partir de un color
+        this.material = new Three.MeshPhongMaterial({
+            color: 0xee5253,
+            flatShading: true,
+            specular: 0.4,
+            shininess: 0.1,
+            reflectivity: 0.2,
+        });
+    }
+}
 
-        this.geometry = new Three.ConeGeometry(0.8, 1.5, 100);
+// ────────────────────────────────────────────────────────────────────────────────
+
+class Cono extends Basic_Geometry {
+    constructor(gui, gui_title) {
+        super(gui, gui_title);
+
+        this.geometry = new Three.ConeGeometry(0.8, 1.5, 20);
 
         this.material = new Three.MeshPhongMaterial({
             color: 0xff9f43,
             specular: 0.8,
             shininess: 0.1,
             reflectivity: 0.8,
-            flatShading: true,
         });
     }
+}
 
     createGUI(gui, gui_title) {
         this.guiControls = new (function () {
