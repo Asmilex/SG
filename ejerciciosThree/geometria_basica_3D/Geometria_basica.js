@@ -40,9 +40,11 @@ class Basic_Geometry extends Three.Mesh {
             this.posY = 0.4;
             this.posZ = 0.0;
 
-            this.reset_position = new Three.Vector3(0, 0.4, 0);
+            this.spawn_position = new Three.Vector3(0, 0.4, 0);
 
             this.wireframe = false;
+
+            this.enable_animation = true;
 
             // Un botón para dejarlo todo en su posición inicial
             // Cuando se pulse se ejecutará esta función.
@@ -55,9 +57,9 @@ class Basic_Geometry extends Three.Mesh {
                 this.rotY = 0.0;
                 this.rotZ = 0.0;
 
-                this.posX = this.reset_position.x;
-                this.posY = this.reset_position.y;
-                this.posZ = this.reset_position.z;
+                this.posX = this.spawn_position.x;
+                this.posY = this.spawn_position.y;
+                this.posZ = this.spawn_position.z;
             };
         })();
 
@@ -67,36 +69,10 @@ class Basic_Geometry extends Three.Mesh {
         // Estas lineas son las que añaden los componentes de la interfaz
         // Las tres cifras indican un valor mínimo, un máximo y el incremento
         // El método   listen()   permite que si se cambia el valor de la variable en código, el deslizador de la interfaz se actualice
-        folder.add(this.guiControls, "wireframe").name("Wireframe");
-        folder
-            .add(this.guiControls, "sizeX", 0.1, 5.0, 0.1)
-            .name("Tamaño X:\t")
-            .listen();
 
-        folder
-            .add(this.guiControls, "sizeY", 0.1, 5.0, 0.1)
-            .name("Tamaño Y:\t")
-            .listen();
-
-        folder
-            .add(this.guiControls, "sizeZ", 0.1, 5.0, 0.1)
-            .name("Tamaño Z:\t")
-            .listen();
-
-        folder
-            .add(this.guiControls, "rotX", 0.0, Math.PI / 2, 0.1)
-            .name("Rotación X:\t")
-            .listen();
-
-        folder
-            .add(this.guiControls, "rotY", 0.0, Math.PI / 2, 0.1)
-            .name("Rotación Y:\t")
-            .listen();
-
-        folder
-            .add(this.guiControls, "rotZ", 0.0, Math.PI / 2, 0.1)
-            .name("Rotación Z:\t")
-            .listen();
+        //
+        // ────────────────────────────────────────────────── POSICION ─────
+        //
 
         folder
             .add(this.guiControls, "posX", -20.0, 20.0, 0.1)
@@ -113,8 +89,96 @@ class Basic_Geometry extends Three.Mesh {
             .name("Posición Z:\t")
             .listen();
 
+        //
+        // ──────────────────────────────────────────────────── TAMAÑO ─────
+        //
+
+        folder
+            .add(this.guiControls, "sizeX", 0.1, 5.0, 0.1)
+            .name("Tamaño X:\t")
+            .listen();
+
+        folder
+            .add(this.guiControls, "sizeY", 0.1, 5.0, 0.1)
+            .name("Tamaño Y:\t")
+            .listen();
+
+        folder
+            .add(this.guiControls, "sizeZ", 0.1, 5.0, 0.1)
+            .name("Tamaño Z:\t")
+            .listen();
+
+        //
+        // ────────────────────────────────────────────────── ROTACION ─────
+        //
+
+        folder
+            .add(this.guiControls, "rotX", 0.0, Math.PI / 2, 0.1)
+            .name("Rotación X:\t")
+            .listen();
+
+        folder
+            .add(this.guiControls, "rotY", 0.0, Math.PI / 2, 0.1)
+            .name("Rotación Y:\t")
+            .listen();
+
+        folder
+            .add(this.guiControls, "rotZ", 0.0, Math.PI / 2, 0.1)
+            .name("Rotación Z:\t")
+            .listen();
+
+        //
+        // ───────────────────────────────────────────────────── OTROS ─────
+        //
+
+        folder.add(this.guiControls, "wireframe").name("Wireframe").listen();
+
+        folder
+            .add(this.guiControls, "enable_animation")
+            .name("Animaciones")
+            .listen();
+
         folder.add(this.guiControls, "reset").name("[ Reset ]");
     }
+
+    set_spawn_coordinates(coordenadas) {
+        this.guiControls.posX = coordenadas.x;
+        this.guiControls.posY = coordenadas.y;
+        this.guiControls.posZ = coordenadas.z;
+
+        this.guiControls.spawn_position = coordenadas;
+    }
+
+    set_spawn_coordinates(x, y, z) {
+        this.guiControls.posX = x;
+        this.guiControls.posY = y;
+        this.guiControls.posZ = z;
+
+        this.guiControls.spawn_position.x = x;
+        this.guiControls.spawn_position.y = y;
+        this.guiControls.spawn_position.z = z;
+    }
+
+    set_position(x, y, z) {
+        this.position.set(x, y, z);
+        this.guiControls.posX = x;
+        this.guiControls.posY = y;
+        this.guiControls.posZ = z;
+    }
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    animate(t) {
+        this.set_position(
+            this.position.x,
+            this.guiControls.spawn_position.y + Math.abs(Math.sin(2 * t)),
+            this.position.z
+        );
+
+        if (this.guiControls.rotY + 0.01 < 2 * Math.PI)
+            this.guiControls.rotY = this.guiControls.rotY + 0.01;
+        else this.guiControls.rotY = 0;
+    }
+
     update() {
         this.position.set(
             this.guiControls.posX,
@@ -133,24 +197,6 @@ class Basic_Geometry extends Three.Mesh {
         );
 
         this.material.wireframe = this.guiControls.wireframe;
-    }
-
-    set_spawn_coordinates(coordenadas) {
-        this.guiControls.posX = coordenadas.x;
-        this.guiControls.posY = coordenadas.y;
-        this.guiControls.posZ = coordenadas.z;
-
-        this.guiControls.reset_position = coordenadas;
-    }
-
-    set_spawn_coordinates(x, y, z) {
-        this.guiControls.posX = x;
-        this.guiControls.posY = y;
-        this.guiControls.posZ = z;
-
-        this.guiControls.reset_position.x = x;
-        this.guiControls.reset_position.y = y;
-        this.guiControls.reset_position.z = z;
     }
 }
 

@@ -47,7 +47,7 @@ class MyScene extends Three.Scene {
         this.objetos_escena.add(objeto);
 
         objeto = new Cono(this.gui, "Controles del cono");
-        objeto.set_spawn_coordinates(2.4, 0.4, 0);
+        objeto.set_spawn_coordinates(2.4, 0.5, 0);
         this.objetos_escena.add(objeto);
 
         objeto = new Cilindro(this.gui, "Controles del cilindro");
@@ -242,13 +242,19 @@ class MyScene extends Three.Scene {
         this.cameraControl.update();
 
         // Actualizar los objetos de la escena
+
+        var time = this.clock.getElapsedTime();
+        var delta = this.clock.getDelta();
+
         this.objetos_escena.children.map(function (objeto) {
             objeto.update();
+
+            if (objeto.guiControls.enable_animation) {
+                objeto.animate(time, delta);
+            }
         });
 
         this.stats.update();
-
-        const delta = this.clock.getDelta();
 
         requestAnimationFrame(() => this.update());
     }
