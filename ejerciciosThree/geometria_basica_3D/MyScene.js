@@ -12,6 +12,8 @@ import {
     Icosaedro,
 } from "./Geometria_basica.js";
 
+import { Torno } from "./Geometria_revol.js";
+
 //
 // ───────────────────────────────────────────────────────────────────── MAIN ─────
 //
@@ -39,6 +41,10 @@ class MyScene extends Three.Scene {
         // Estadísticas
         this.stats = this.createStats(myCanvas);
 
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 1 ─────
+        //
+
         // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
         this.objetos_escena = new Three.Object3D();
 
@@ -65,6 +71,16 @@ class MyScene extends Three.Scene {
         objeto = new Icosaedro(this.gui, "Controles del icosaedro");
         objeto.set_spawn_coordinates(2.4, 0.25, 2.4);
         this.objetos_escena.add(objeto);
+
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 3 ─────
+        //
+
+        var torno = new Torno(this.gui, "Controles del torno");
+        torno.position.set(-5, -1, -5);
+        this.add(torno);
+
+        // ─────────────────────────────────────────────────────────────────
 
         this.add(this.objetos_escena);
     }
