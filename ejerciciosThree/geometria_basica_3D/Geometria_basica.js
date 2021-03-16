@@ -171,7 +171,7 @@ class Basic_Geometry extends Three.Mesh {
     animate(t) {
         this.set_position(
             this.position.x,
-            this.guiControls.spawn_position.y + Math.abs(Math.sin(2 * t)),
+            this.guiControls.spawn_position.y + Math.abs(Math.sin(2.5 * t)),
             this.position.z
         );
 

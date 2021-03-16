@@ -11,8 +11,9 @@ import {
     Toro,
     Icosaedro,
 } from "./Geometria_basica.js";
-
 import { Torno } from "./Geometria_revol.js";
+import { Pastilla_2D, Pastilla_3D, Helice } from "./Geometria_shape.js";
+import { Taza } from "./Geometria_CSG.js";
 
 //
 // ───────────────────────────────────────────────────────────────────── MAIN ─────
@@ -42,7 +43,7 @@ class MyScene extends Three.Scene {
         this.stats = this.createStats(myCanvas);
 
         //
-        // ─────────────────────────────────────────────── EJERCICIO 1 ─────
+        // ─────────────────────────────────────────────── EJERCICIO 2 ─────
         //
 
         // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
@@ -79,6 +80,30 @@ class MyScene extends Three.Scene {
         var torno = new Torno(this.gui, "Controles del torno");
         torno.position.set(-5, -1, -5);
         this.add(torno);
+
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 4 ─────
+        //
+
+        var pastilla_2D = new Pastilla_2D();
+        pastilla_2D.position.set(3, 0, -5);
+        this.add(pastilla_2D);
+
+        var pastilla_3D = new Pastilla_3D();
+        pastilla_3D.position.set(6, 0, -5);
+        this.add(pastilla_3D);
+
+        var helice = new Helice();
+        helice.position.set(12, 3, -6);
+        this.add(helice);
+
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 5 ─────
+        //
+
+        var taza = new Taza();
+        taza.position.set(-5, 0.9, 1);
+        this.add(taza);
 
         // ─────────────────────────────────────────────────────────────────
 
