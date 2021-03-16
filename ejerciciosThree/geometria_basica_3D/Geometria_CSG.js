@@ -3,6 +3,9 @@ import * as Three from "../libs/three.module.js";
 
 class Taza extends Three.Object3D {
     constructor() {
+        // Cambiar posición, escala y rotación de geometría: https://discourse.threejs.org/t/rotate-and-scale-geometry/880
+        // Ejemplo: https://stemkoski.github.io/Three.js/CSG.html
+        
         super();
 
         var material = new Three.MeshPhongMaterial();
