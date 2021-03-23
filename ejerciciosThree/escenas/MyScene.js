@@ -10,10 +10,15 @@ import {
     Esfera,
     Toro,
     Icosaedro,
-} from "./Geometria_basica.js";
-import { Torno } from "./Geometria_revol.js";
-import { Pastilla_2D, Pastilla_3D, Helice } from "./Geometria_shape.js";
-import { Taza } from "./Geometria_CSG.js";
+} from "../geometria_basica_3D/Geometria_basica.js";
+import { Torno } from "../geometria_basica_3D/Geometria_revol.js";
+import {
+    Pastilla_2D,
+    Pastilla_3D,
+    Helice,
+} from "../geometria_basica_3D/Geometria_shape.js";
+import { Taza } from "../geometria_basica_3D/Geometria_CSG.js";
+import { PortalGun } from "../modelos/Modelos.js";
 
 //
 // ───────────────────────────────────────────────────────────────────── MAIN ─────
@@ -105,6 +110,16 @@ class MyScene extends Three.Scene {
         taza.position.set(-5, 0.9, 1);
         this.add(taza);
 
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 6 ─────
+        //
+
+        var portal_gun = new PortalGun();
+        portal_gun.rotation.set(0, Math.PI, 0);
+        portal_gun.scale.set(3.5, 3.5, 3.5);
+        portal_gun.position.set(-8, 1.5, 8);
+        this.add(portal_gun);
+
         // ─────────────────────────────────────────────────────────────────
 
         this.add(this.objetos_escena);
@@ -129,7 +144,7 @@ class MyScene extends Three.Scene {
             this.renderer.domElement
         );
 
-        this.cameraControl.rotateSpeed = 2.5;
+        this.cameraControl.rotateSpeed = 2.0;
         this.cameraControl.zoomSpeed = -2;
         this.cameraControl.panSpeed = 0.5;
         this.cameraControl.target = look;
