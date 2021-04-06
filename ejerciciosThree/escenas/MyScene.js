@@ -18,7 +18,8 @@ import {
     Helice,
 } from "../geometria_basica_3D/Geometria_shape.js";
 import { Taza } from "../geometria_basica_3D/Geometria_CSG.js";
-import { PortalGun } from "../modelos/Modelos.js";
+import { PortalGun } from "../modelos/PortalGun.js";
+import { Pendulo } from "../modelos/Pendulo.js";
 
 //
 // ───────────────────────────────────────────────────────────────────── MAIN ─────
@@ -119,6 +120,13 @@ class MyScene extends Three.Scene {
         portal_gun.scale.set(3.5, 3.5, 3.5);
         portal_gun.position.set(-8, 1.5, 8);
         this.add(portal_gun);
+
+        //
+        // ─────────────────────────────────────────────── EJERCICIO 7 ─────
+        //
+
+        var pendulo = new Pendulo(this.gui, "Controles del péndulo");
+        this.add(pendulo);
 
         // ─────────────────────────────────────────────────────────────────
 
