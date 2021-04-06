@@ -6,16 +6,30 @@ class Pendulo extends Three.Object3D {
 
         this.palo_grande = new PaloGrande();
         this.add(this.palo_grande);
+
+        this.palo_chico = new PaloChico();
+        // Bajar primero eje a altura 0. Está a 1/5 de la altura de la pieza
+        // -altura eje -altura de la pieza verde/2 - 0.1 * altura pieza roja
+        this.palo_chico.position.set(0, -4 - 4 / 2 - 0.1 * 5, 3);
+        this.add(this.palo_chico);
+
         this.createGUI(gui, gui_title);
     }
 
     createGUI(gui, gui_title) {
         this.guiControls = new (function () {
             this.angulo_grande = 0;
+            this.angulo_chico = 0;
             this.longitud_pieza_roja = 5.0;
+            this.longitud_pieza_morada = 10.0;
+            this.porcentaje = 10.0;
         })();
-        var carpeta_pendulo_g = gui.addFolder("Primer péndulo");
+
         var that = this;
+
+        var carpeta_pendulo_g = gui.addFolder("Primer péndulo");
+
+        // ─────────────────────────────────────────────────────────────────
 
         carpeta_pendulo_g
             .add(
@@ -50,6 +64,27 @@ class Pendulo extends Three.Object3D {
                     -2 - that.guiControls.longitud_pieza_roja - 2;
             })
             .listen();
+
+        // ─────────────────────────────────────────────────────────────────
+
+        var carpeta_pendulo_p = gui.addFolder("Segundo péndulo");
+        carpeta_pendulo_p
+            .add(
+                this.guiControls,
+                "angulo_chico",
+                -Math.PI / 4,
+                Math.PI / 4,
+                0.01
+            )
+            .name("Giro")
+            .onChange(function (valor) {})
+            .listen();
+
+        carpeta_pendulo_p
+            .add(this.guiControls, "longitud_pieza_morada", 10, 20, 0.01)
+            .name("Longitud")
+            .onChange(function (valor) {})
+            .listen();
     }
 }
 
@@ -61,7 +96,7 @@ class PaloGrande extends Three.Object3D {
         this.add(this.pieza_verde_1);
 
         this.eje_grande = new Eje();
-        this.eje_grande.position.z = this.eje_grande.position.z + 2;
+        this.eje_grande.position.z = 2;
         this.add(this.eje_grande);
 
         this.pieza_roja = new PiezaRoja();
@@ -81,6 +116,15 @@ class PaloGrande extends Three.Object3D {
 class PaloChico extends Three.Object3D {
     constructor(gui, gui_title) {
         super();
+
+        this.pieza_morada = new PiezaMorada();
+        this.pieza_morada.scale.z = 0.5;
+        this.add(this.pieza_morada);
+
+        this.eje_chico = new Eje();
+        this.eje_chico.position.set(0, 10 / 2 - 1, 1);
+        this.eje_chico.scale.set(0.5, 0.5, 0.5);
+        this.add(this.eje_chico);
     }
 }
 
@@ -137,6 +181,19 @@ class PiezaRoja extends Three.Object3D {
         const geometria = new Three.BoxGeometry(4, 5, 4);
         const material = (this.material = new Three.MeshPhongMaterial({
             color: 0xff6b6b,
+        }));
+
+        this.add(new Three.Mesh(geometria, material));
+    }
+}
+
+class PiezaMorada extends Three.Object3D {
+    constructor() {
+        super();
+
+        const geometria = new Three.BoxGeometry(4, 10, 4);
+        const material = (this.material = new Three.MeshPhongMaterial({
+            color: 0x5f27cd,
         }));
 
         this.add(new Three.Mesh(geometria, material));
