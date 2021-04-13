@@ -11,7 +11,8 @@ class Pendulo extends Three.Object3D {
         // Bajar primero eje a altura 0. Está a 1/5 de la altura de la pieza
         // -altura eje -altura de la pieza verde/2 - 0.1 * altura pieza roja
         this.palo_chico.position.set(0, -4 - 4 / 2 - 0.1 * 5, 3);
-        this.add(this.palo_chico);
+
+        this.palo_grande.add(this.palo_chico);
 
         this.createGUI(gui, gui_title);
     }
@@ -24,8 +25,6 @@ class Pendulo extends Three.Object3D {
             this.longitud_pieza_morada = 10.0;
             this.porcentaje = 10.0;
         })();
-
-        var that = this;
 
         var carpeta_pendulo_g = gui.addFolder("Primer péndulo");
 
@@ -40,29 +39,11 @@ class Pendulo extends Three.Object3D {
                 0.01
             )
             .name("Giro")
-            .onChange(function (valor) {
-                that.palo_grande.rotation.set(
-                    0,
-                    0,
-                    that.guiControls.angulo_grande
-                );
-            })
             .listen();
 
         carpeta_pendulo_g
             .add(this.guiControls, "longitud_pieza_roja", 5, 10, 0.01)
             .name("Longitud")
-            .onChange(function (valor) {
-                that.palo_grande.pieza_roja.scale.set(
-                    1,
-                    that.guiControls.longitud_pieza_roja / 5, // En escala, llevar [5, 10] a [1, 2]
-                    1
-                );
-                that.palo_grande.pieza_roja.position.y =
-                    -2 - that.guiControls.longitud_pieza_roja / 2.0;
-                that.palo_grande.pieza_verde_2.position.y =
-                    -2 - that.guiControls.longitud_pieza_roja - 2;
-            })
             .listen();
 
         // ─────────────────────────────────────────────────────────────────
@@ -77,14 +58,33 @@ class Pendulo extends Three.Object3D {
                 0.01
             )
             .name("Giro")
-            .onChange(function (valor) {})
             .listen();
 
         carpeta_pendulo_p
             .add(this.guiControls, "longitud_pieza_morada", 10, 20, 0.01)
             .name("Longitud")
-            .onChange(function (valor) {})
             .listen();
+    }
+
+    update() {
+        this.palo_grande.pieza_roja.scale.y =
+            this.guiControls.longitud_pieza_roja / 5;
+        this.palo_grande.pieza_roja.position.y =
+            -2 - this.guiControls.longitud_pieza_roja / 2.0;
+
+        this.palo_grande.pieza_verde_2.position.y =
+            -2 - this.guiControls.longitud_pieza_roja - 2;
+
+        this.palo_grande.rotation.z = this.guiControls.angulo_grande;
+        this.palo_grande.pieza_verde_2.position.y =
+            -this.guiControls.longitud_pieza_roja - 4.0;
+
+        this.palo_chico.rotation.z = this.guiControls.angulo_chico;
+        this.palo_chico.position.y =
+            -6 -
+            (this.guiControls.porcentaje *
+                this.guiControls.longitud_pieza_roja) /
+                100;
     }
 }
 
