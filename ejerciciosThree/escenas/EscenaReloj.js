@@ -19,8 +19,7 @@ import {
 } from "../geometria_basica_3D/Geometria_shape.js";
 import { Taza } from "../geometria_basica_3D/Geometria_CSG.js";
 import { PortalGun } from "../modelos/PortalGun.js";
-import { Pendulo } from "../modelos/Pendulo.js";
-import { Reloj } from "../animacion/reloj.js";
+import { Reloj } from "../animacion/Reloj.js";
 
 //
 // ───────────────────────────────────────────────────────────────────── MAIN ─────
@@ -49,97 +48,11 @@ class MyScene extends Three.Scene {
         // Estadísticas
         this.stats = this.createStats(myCanvas);
 
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 2 ─────
-        //
-
         // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
-        this.objetos_escena = new Three.Object3D();
-
-        // Añadir elementos a escena
-        var objeto = new Cubo(this.gui, "Controles del cubo");
-        this.objetos_escena.add(objeto);
-
-        objeto = new Cono(this.gui, "Controles del cono");
-        objeto.set_spawn_coordinates(2.4, 0.5, 0);
-        this.objetos_escena.add(objeto);
-
-        objeto = new Cilindro(this.gui, "Controles del cilindro");
-        objeto.set_spawn_coordinates(-2.4, 0.4, 0);
-        this.objetos_escena.add(objeto);
-
-        objeto = new Esfera(this.gui, "Controles de la esfera");
-        objeto.set_spawn_coordinates(0, 0.3, 2.4);
-        this.objetos_escena.add(objeto);
-
-        objeto = new Toro(this.gui, "Controles del toro");
-        objeto.set_spawn_coordinates(0, 0.4, -2.4);
-        this.objetos_escena.add(objeto);
-
-        objeto = new Icosaedro(this.gui, "Controles del icosaedro");
-        objeto.set_spawn_coordinates(2.4, 0.25, 2.4);
-        this.objetos_escena.add(objeto);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 3 ─────
-        //
-
-        var torno = new Torno(this.gui, "Controles del torno");
-        torno.position.set(-5, -1, -5);
-        this.add(torno);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 4 ─────
-        //
-
-        var pastilla_2D = new Pastilla_2D();
-        pastilla_2D.position.set(3, 0, -5);
-        this.add(pastilla_2D);
-
-        var pastilla_3D = new Pastilla_3D();
-        pastilla_3D.position.set(6, 0, -5);
-        this.add(pastilla_3D);
-
-        var helice = new Helice();
-        helice.position.set(12, 3, -6);
-        this.add(helice);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 5 ─────
-        //
-
-        var taza = new Taza();
-        taza.position.set(-5, 0.9, 1);
-        this.add(taza);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 6 ─────
-        //
-
-        var portal_gun = new PortalGun();
-        portal_gun.rotation.set(0, Math.PI, 0);
-        portal_gun.scale.set(3.5, 3.5, 3.5);
-        portal_gun.position.set(-8, 1.5, 8);
-        this.add(portal_gun);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 7 ─────
-        //
-
-        //var pendulo = new Pendulo(this.gui, "Controles del péndulo");
-        //this.add(pendulo);
-
-        //
-        // ─────────────────────────────────────────────── EJERCICIO 8 ─────
-        //
-
-        var reloj = new Reloj(this.gui, "Controles del reloj");
-        reloj.position.set(-30, 0, -15);
-        this.objetos_escena.add(reloj);
+        this.reloj = new Reloj(this.gui, "Controles del reloj");
+        this.add(this.reloj);
 
         // ─────────────────────────────────────────────────────────────────
-
-        this.add(this.objetos_escena);
     }
 
     createCamera() {
@@ -187,7 +100,7 @@ class MyScene extends Three.Scene {
         });
         var ground = new Three.Mesh(geometryGround, materialGround);
 
-        ground.position.y = -0.2;
+        ground.position.y = -17;
         ground.receiveShadow = true;
         ground.rotation.x = -Math.PI / 2;
 
@@ -319,13 +232,7 @@ class MyScene extends Three.Scene {
         var time = this.clock.getElapsedTime();
         var delta = this.clock.getDelta();
 
-        this.objetos_escena.children.map(function (objeto) {
-            objeto.update();
-
-            if (objeto.guiControls.enable_animation) {
-                objeto.animate(time, delta);
-            }
-        });
+        this.reloj.update();
 
         this.stats.update();
 
