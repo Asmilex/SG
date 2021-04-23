@@ -2,23 +2,6 @@ import * as Three from "../libs/three.module.js";
 import { GUI } from "../libs/dat.gui.module.js";
 import { TrackballControls } from "../libs/TrackballControls.js";
 import Stats from "../libs/stats.js";
-
-import {
-    Cubo,
-    Cono,
-    Cilindro,
-    Esfera,
-    Toro,
-    Icosaedro,
-} from "../geometria_basica_3D/Geometria_basica.js";
-import { Torno } from "../geometria_basica_3D/Geometria_revol.js";
-import {
-    Pastilla_2D,
-    Pastilla_3D,
-    Helice,
-} from "../geometria_basica_3D/Geometria_shape.js";
-import { Taza } from "../geometria_basica_3D/Geometria_CSG.js";
-import { PortalGun } from "../modelos/PortalGun.js";
 import { Reloj } from "../animacion/Reloj.js";
 
 //
@@ -48,11 +31,8 @@ class MyScene extends Three.Scene {
         // Estadísticas
         this.stats = this.createStats(myCanvas);
 
-        // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
         this.reloj = new Reloj(this.gui, "Controles del reloj");
         this.add(this.reloj);
-
-        // ─────────────────────────────────────────────────────────────────
     }
 
     createCamera() {

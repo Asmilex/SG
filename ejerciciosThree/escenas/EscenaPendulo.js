@@ -2,23 +2,6 @@ import * as Three from "../libs/three.module.js";
 import { GUI } from "../libs/dat.gui.module.js";
 import { TrackballControls } from "../libs/TrackballControls.js";
 import Stats from "../libs/stats.js";
-
-import {
-    Cubo,
-    Cono,
-    Cilindro,
-    Esfera,
-    Toro,
-    Icosaedro,
-} from "../geometria_basica_3D/Geometria_basica.js";
-import { Torno } from "../geometria_basica_3D/Geometria_revol.js";
-import {
-    Pastilla_2D,
-    Pastilla_3D,
-    Helice,
-} from "../geometria_basica_3D/Geometria_shape.js";
-import { Taza } from "../geometria_basica_3D/Geometria_CSG.js";
-import { PortalGun } from "../modelos/PortalGun.js";
 import { Pendulo } from "../modelos/Pendulo.js";
 
 //
@@ -48,11 +31,8 @@ class MyScene extends Three.Scene {
         // Estadísticas
         this.stats = this.createStats(myCanvas);
 
-        // Agrupamos todos los objetos en el objeto `objeto_escena`. Luego tendremos que actualizarlos.
         this.pendulo = new Pendulo(this.gui, "Controles del péndulo");
         this.add(this.pendulo);
-
-        // ─────────────────────────────────────────────────────────────────
     }
 
     createCamera() {
